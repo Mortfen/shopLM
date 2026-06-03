@@ -1,0 +1,130 @@
+﻿@page
+@model shop.wb.Pages.Account.ProfileModel
+@{
+    ViewData["Title"] = "Профиль";
+}
+
+<div class="container">
+    <div class="profile-wrap">
+
+        <!-- Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                @* Первая буква имени *@
+                А
+            </div>
+            <div>
+                <div class="profile-name">Анна Морозова</div>
+                <div class="profile-meta">Мастер с апреля 2023 · Москва</div>
+                <div style="margin-top:10px; display:flex; gap:8px;">
+                    <span class="tag">Вязание</span>
+                    <span class="tag-gray tag">Текстиль</span>
+                </div>
+            </div>
+            <div style="margin-left:auto; display:flex; gap:10px;">
+                <a asp-page="/Account/Edit" class="btn-outline">Редактировать</a>
+                <a asp-page="/Account/Logout" class="btn-outline"
+                   style="color:var(--c-danger); border-color:var(--c-danger);">
+                    Выйти
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-val">24</div>
+                <div class="stat-label">Товаров размещено</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val">87</div>
+                <div class="stat-label">Продаж</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val">4.9</div>
+                <div class="stat-label">Средняя оценка</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="profile-tabs">
+            <div class="profile-tab active">Мои товары</div>
+            <div class="profile-tab">Заказы</div>
+            <div class="profile-tab">Покупки</div>
+            <div class="profile-tab">Настройки</div>
+        </div>
+
+        <!-- My products tab -->
+        <div id="tab-products">
+            <div class="flex-between" style="margin-bottom:20px;">
+                <span class="text-sm text-muted">24 товара</span>
+                <a asp-page="/Products/Create" class="btn btn-primary"
+                   style="padding:9px 18px; font-size:13px;">
+                    + Добавить товар
+                </a>
+            </div>
+
+            <div class="product-grid">
+                @* В реальном коде foreach по Model.MyProducts *@
+                @for (int i = 0; i < 4; i++)
+                {
+                    <div class="card product-card" style="position:relative;">
+                        <div class="product-img">
+                            <img src="https://placehold.co/400x400/EBF2ED/2D5A3D?text=Фото" alt="Товар" />
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Вязаный свитер</div>
+                            <div class="product-seller">3 в наличии</div>
+                            <div class="flex-between">
+                                <div class="product-price">2 400 <span>₽</span></div>
+                                <div style="display:flex; gap:6px;">
+                                    <a asp-page="/Products/Edit" asp-route-id="@i"
+                                       style="font-size:12px; color:var(--c-accent);">Изменить</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Settings tab (hidden by default, shown via JS) -->
+        <div id="tab-settings" style="display:none; max-width:520px;">
+            <div class="form-section">
+                <div class="form-section-title">Личные данные</div>
+                <div class="gap-stack">
+                    <div class="form-group">
+                        <label>Имя</label>
+                        <input type="text" value="Анна" />
+                    </div>
+                    <div class="form-group">
+                        <label>Фамилия</label>
+                        <input type="text" value="Морозова" />
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" value="anna@example.com" />
+                    </div>
+                    <div class="form-group">
+                        <label>Город</label>
+                        <input type="text" value="Москва" />
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary" style="padding:11px 28px;">Сохранить</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.profile-tab').forEach((tab, i) => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            document.getElementById('tab-products').style.display = i === 0 ? 'block' : 'none';
+            document.getElementById('tab-settings').style.display = i === 3 ? 'block' : 'none';
+        });
+    });
+</script>

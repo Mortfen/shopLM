@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: pg17_dip
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: dip
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:

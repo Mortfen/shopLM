@@ -1,0 +1,138 @@
+﻿@page
+@model shop.wb.Pages.Producs.CreateModel
+@{
+    ViewData["Title"] = "Добавить изделие";
+}
+
+<div class="container">
+    <div class="create-wrap">
+
+        <h1>Добавить изделие</h1>
+        <p class="page-sub">Расскажите о своей работе — хорошее описание помогает найти покупателя</p>
+
+        <form method="post" enctype="multipart/form-data">
+
+            <!-- Фотографии -->
+            <div class="form-section">
+                <div class="form-section-title">Фотографии</div>
+
+                <div class="upload-zone" onclick="document.getElementById('photos').click()">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.2">
+                        <rect x="3" y="3" width="18" height="18" rx="3" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <path d="M21 15l-5-5L5 21" />
+                    </svg>
+                    <p><strong>Нажмите для загрузки</strong> или перетащите файлы</p>
+                    <p style="font-size:12px; margin-top:4px;">PNG, JPG до 10 МБ · до 8 фото</p>
+                </div>
+                <input id="photos" asp-for="Photos" type="file"
+                       multiple accept="image/*" style="display:none;" />
+            </div>
+
+            <!-- Основная информация -->
+            <div class="form-section">
+                <div class="form-section-title">Описание</div>
+                <div class="gap-stack">
+
+                    <div class="form-group">
+                        <label asp-for="Product.Name">Название</label>
+                        <input asp-for="Product.Name"
+                               placeholder="Например: Вязаная шапка из мериноса, серая" />
+                        <span asp-validation-for="Product.Name" class="form-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Product.Category">Категория</label>
+                        <select asp-for="Product.Category">
+                            <option value="">Выберите категорию</option>
+                            <option>Вязание</option>
+                            <option>Керамика</option>
+                            <option>Украшения</option>
+                            <option>Живопись</option>
+                            <option>Текстиль</option>
+                            <option>Дерево</option>
+                            <option>Другое</option>
+                        </select>
+                        <span asp-validation-for="Product.Category" class="form-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Product.Description">Описание</label>
+                        <textarea asp-for="Product.Description"
+                                  rows="5"
+                                  placeholder="Материалы, размеры, особенности изготовления, история изделия..."></textarea>
+                        <span class="form-hint">Чем подробнее — тем лучше работает ИИ-поиск</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Характеристики -->
+            <div class="form-section">
+                <div class="form-section-title">Характеристики</div>
+                <div class="gap-stack">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label asp-for="Product.Color">Цвет</label>
+                            <input asp-for="Product.Color" placeholder="Например: тёмно-синий" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Product.Material">Материал</label>
+                            <input asp-for="Product.Material" placeholder="Например: шерсть, хлопок" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label asp-for="Product.Width">Ширина (см)</label>
+                            <input asp-for="Product.Width" type="number" placeholder="0" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Product.Height">Высота (см)</label>
+                            <input asp-for="Product.Height" type="number" placeholder="0" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Цена -->
+            <div class="form-section">
+                <div class="form-section-title">Цена и наличие</div>
+                <div class="gap-stack">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label asp-for="Product.Price">Цена</label>
+                            <div class="price-input-wrap">
+                                <span class="currency">₽</span>
+                                <input asp-for="Product.Price"
+                                       type="number" min="0" placeholder="0" />
+                            </div>
+                            <span asp-validation-for="Product.Price" class="form-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Product.Quantity">Количество</label>
+                            <input asp-for="Product.Quantity"
+                                   type="number" min="1" value="1" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div style="display:flex; gap:12px; padding-top:8px;">
+                <button type="submit" class="btn btn-primary" style="padding:12px 32px;">
+                    Опубликовать
+                </button>
+                <a asp-page="/Index" class="btn-outline" style="padding:11px 24px;">
+                    Отмена
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>

@@ -1,0 +1,87 @@
+﻿@page
+@model shop.wb.Pages.IndexModel
+@{
+    ViewData["Title"] = "Авторские изделия";
+}
+
+<!-- Hero -->
+<section class="page-hero">
+    <div class="container">
+        <div style="display:inline-flex; align-items:center; gap:8px; margin-bottom:20px;
+                    padding:6px 14px; border:1px solid var(--c-border);
+                    border-radius:20px; font-size:13px; color:var(--c-muted);">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--c-accent);
+                         display:inline-block;"></span>
+            248 изделий в каталоге
+        </div>
+        <h1>Авторские изделия<br>с душой</h1>
+        <p>Уникальные вещи, сделанные руками мастеров.<br>Найдите что-то особенное.</p>
+        <div style="display:flex; gap:12px; margin-top:32px; flex-wrap:wrap;">
+            <a href="#catalog" class="btn btn-primary">Смотреть каталог</a>
+            <a asp-page="/Products/Create" class="btn-ghost">Продать изделие</a>
+        </div>
+
+        <!-- Stats row -->
+        <div style="display:flex; gap:40px; margin-top:52px; padding-top:32px;
+                    border-top:1px solid var(--c-border);">
+            <div>
+                <div style="font-family:'DM Serif Display',serif; font-size:28px;">1 200+</div>
+                <div style="font-size:13px; color:var(--c-muted); margin-top:2px;">Мастеров</div>
+            </div>
+            <div>
+                <div style="font-family:'DM Serif Display',serif; font-size:28px;">8 400+</div>
+                <div style="font-size:13px; color:var(--c-muted); margin-top:2px;">Изделий продано</div>
+            </div>
+            <div>
+                <div style="font-family:'DM Serif Display',serif; font-size:28px;">4.9</div>
+                <div style="font-size:13px; color:var(--c-muted); margin-top:2px;">Средняя оценка</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filters -->
+<div class="container">
+    <div class="filters-bar">
+        <button class="filter-chip active">Все</button>
+        <button class="filter-chip">Вязание</button>
+        <button class="filter-chip">Керамика</button>
+        <button class="filter-chip">Украшения</button>
+        <button class="filter-chip">Живопись</button>
+        <button class="filter-chip">Текстиль</button>
+        <button class="filter-chip">Дерево</button>
+    </div>
+</div>
+
+<!-- Catalog -->
+<section class="section" id="catalog">
+    <div class="container">
+        <div class="flex-between" style="margin-bottom:28px;">
+            <h2 class="section-title" style="margin-bottom:0;">Каталог</h2>
+            <span class="text-sm text-muted">248 изделий</span>
+        </div>
+
+        <div class="product-grid">
+            @for (int i = 0; i < 8; i++)
+            {
+                <a asp-page="/Products/Details" asp-route-id="@i" class="card product-card">
+                    <div class="product-img">
+                        <img src="https://placehold.co/400x400/1A2E22/4E9A6A?text=Фото" alt="Товар" />
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">Вязаный свитер ручной работы</div>
+                        <div class="product-seller">Анна М.</div>
+                        <div class="flex-between">
+                            <div class="product-price">2 400 <span>₽</span></div>
+                            <span class="tag">Вязание</span>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+
+        <div style="text-align:center; margin-top:40px;">
+            <button class="btn-outline" style="padding:11px 32px;">Загрузить ещё</button>
+        </div>
+    </div>
+</section>

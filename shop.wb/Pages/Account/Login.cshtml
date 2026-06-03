@@ -1,0 +1,78 @@
+﻿@page
+@model shop.wb.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Войти";
+    Layout = "_Layout";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card">
+
+        <h1>Добро пожаловать</h1>
+        <p class="auth-sub">Войдите, чтобы покупать и продавать изделия</p>
+
+        <form method="post">
+            <div class="gap-stack">
+
+                <div class="form-group">
+                    <label asp-for="Input.Email">Email</label>
+                    <input asp-for="Input.Email"
+                           type="email"
+                           placeholder="you@example.com"
+                           autocomplete="email" />
+                    <span asp-validation-for="Input.Email" class="form-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="flex-between" style="margin-bottom:6px;">
+                        <label asp-for="Input.Password" style="margin:0;">Пароль</label>
+                        <a asp-page="/Account/ForgotPassword"
+                           style="font-size:13px; color:var(--c-accent);">
+                            Забыли пароль?
+                        </a>
+                    </div>
+                    <input asp-for="Input.Password"
+                           type="password"
+                           placeholder="+-#%^!&^:)(_,\."
+                           autocomplete="current-password" />
+                    <span asp-validation-for="Input.Password" class="form-error"></span>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <input asp-for="Input.RememberMe" type="checkbox"
+                           id="remember"
+                           style="width:16px; height:16px; accent-color:var(--c-accent); cursor:pointer;" />
+                    <label for="remember"
+                           style="font-size:14px; color:var(--c-muted); cursor:pointer; margin:0;">
+                        Запомнить меня
+                    </label>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:24px; padding:12px;">
+                Войти
+            </button>
+
+            @if (!string.IsNullOrEmpty(ViewData["Error"] as string))
+            {
+                <p style="color:var(--c-danger); font-size:13px; text-align:center; margin-top:12px;">
+                    @ViewData["Error"]
+                </p>
+            }
+        </form>
+
+        <div class="auth-divider">или</div>
+
+        <a asp-page="/Account/Register" class="btn-outline"
+           style="width:100%; text-align:center; display:block; padding:12px;">
+            Создать аккаунт
+        </a>
+
+        <p class="auth-footer">
+            Регистрируясь, вы соглашаетесь с
+            <a href="#">условиями использования</a>
+        </p>
+
+    </div>
+</div>

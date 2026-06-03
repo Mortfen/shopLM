@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Handmade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <a class="logo" asp-page="/Index">Handmade</a>
+
+        <nav class="nav-links">
+            <a asp-page="/Index">Каталог</a>
+            <a asp-page="/Products/Create">Продать</a>
+            <a asp-page="/Chat/Index">Поиск ИИ</a>
+        </nav>
+
+        <div class="header-actions">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-page="/Account/Profile" class="btn-icon" title="Профиль">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                </a>
+            }
+            else
+            {
+                <a asp-page="/Account/Login" class="btn-outline">Войти</a>
+            }
+        </div>
+    </div>
+</header>
+
+<main class="site-main">
+    @RenderBody()
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <span class="logo">Handmade</span>
+        <p>Площадка для авторских изделий</p>
+    </div>
+</footer>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
