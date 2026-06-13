@@ -6,8 +6,15 @@ namespace shop.wb.Pages.Account
 {
     public class LoginModel : PageModel
     {
+        private readonly IHttpClientFactory? httpFactory;
+        public LoginModel(IHttpClientFactory httpFactory)
+        { this.httpFactory = httpFactory;  }
         public class InputModel
         {
+            
+                
+           
+
             [Required(ErrorMessage = "Введите email")]
             [EmailAddress(ErrorMessage = "Некорректный email")]
             public string Email { get; set; } = "";

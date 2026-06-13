@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using shop.api.Data;
+using shop.api.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -99,10 +100,11 @@ public class Program
 
             logger.LogInformation("Ответ: {StatusCode}", context.Response.StatusCode);
         });
-        app.MapGet("/", () =>
-        {
-            return "Stable API";
-        });
+        using (var scope = app.Services.CreateScope()) { await DbSeeder.SeedAsync(scope.ServiceProvider); }
+            app.MapGet("/", () =>
+            {
+                return "Stable API";
+            });
 
 
 
