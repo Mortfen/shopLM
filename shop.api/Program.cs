@@ -1,28 +1,29 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using shop.api.Data;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.IO;
+using System.Linq;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using shop.api.Data;
 
 
 
@@ -39,8 +40,33 @@ public class Program
         builder.Services.AddDbContext<DB>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
+        builder.Services.AddAuthentication(options =>
+        {
+            //def jwt
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+        })
+              .AddJwtBearer(options => {
+                  //RSA
+                  var pub_key = RSA.Create();
+                  pub_key.ImportFromPem(File.ReadAllText("key!/key.pub"));
+                  options.TokenValidationParameters = new TokenValidationParameters
+                  {
+                      ValidateIssuer = true,
+                      ValidateAudience = true,
+                      ValidateIssuerSigningKey = true,
+                      ValidIssuer = "HobbyShop.api",
+                      ValidAudience = "HobbyShow.Web",
+                      IssuerSigningKey = new RsaSecurityKey(pub_key),
+                      CryptoProviderFactory = new CryptoProviderFactory() { CacheSignatureProviders = false }//ошибка handles, если нет отключить
 
 
+
+
+                  };
+              });
+        builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -73,7 +99,10 @@ public class Program
 
             logger.LogInformation("Ответ: {StatusCode}", context.Response.StatusCode);
         });
-
+        app.MapGet("/", () =>
+        {
+            return "Stable API";
+        });
 
 
 
@@ -81,6 +110,7 @@ public class Program
         app.UseHttpsRedirection();
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseStaticFiles();
         app.MapControllers();
         app.UseStaticFiles();
         app.UseRouting();

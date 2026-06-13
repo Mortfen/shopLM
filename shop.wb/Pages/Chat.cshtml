@@ -1,0 +1,131 @@
+﻿@page
+@model shop.wb.Pages.Index1Model
+@{
+	ViewData["Title"] = "Авторские изделия";
+	Layout = "_Layout";
+}
+<div class="container">
+    <div class="chat-wrap">
+
+        <!-- Заголовок -->
+        <div class="chat-header">
+            <h1 style="font-family:'DM Serif Display',serif; font-size:32px; font-weight:400;">
+                Lm Помощник к вашим услугам :>
+            </h1>
+            <p class="text-muted" style="font-size:15px; margin-top:6px;">
+                Опишите ваш запрос, 
+            </p>
+        </div>
+
+        <!-- Подсказки -->
+        <div class="chat-hints">
+            <button class="chat-hint" onclick="setHint(this)">Вязаная шапка из шерсти</button>
+            <button class="chat-hint" onclick="setHint(this)">Украшения ручной работы до 1000₽</button>
+            <button class="chat-hint" onclick="setHint(this)">Керамика в скандинавском стиле</button>
+            <button class="chat-hint" onclick="setHint(this)">Деревянные изделия для интерьера</button>
+        </div>
+
+        <!-- Окно сообщений -->
+        <div class="chat-messages" id="chat-messages">
+
+            <!-- Приветствие -->
+            <div class="chat-msg chat-msg-bot">
+                <div class="chat-msg-avatar">ИИ</div>
+                <div class="chat-msg-bubble">
+                    Привет! Я помогу найти нужное изделие в каталоге.
+                    Опишите что вы ищете — материал, цвет, назначение или бюджет.
+                </div>
+            </div>
+
+            @* Сообщения из Model.Messages если есть история *@
+
+        </div>
+
+        <!-- Индикатор загрузки -->
+        <div class="chat-typing" id="chat-typing" style="display:none;">
+            <div class="chat-msg-avatar">ИИ</div>
+            <div class="typing-dots">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+
+        <!-- Поле ввода -->
+        <div class="chat-input-wrap">
+            <div class="chat-input-box">
+                <textarea id="chat-input"
+                          class="chat-input"
+                          placeholder="Например: ищу фигурку..."
+                          rows="1"
+                          onkeydown="handleKey(event)"></textarea>
+                <button class="chat-send" id="chat-send" onclick="sendMessage()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />
+                    </svg>
+                </button>
+            </div>
+            <p class="text-muted" style="font-size:12px; margin-top:8px; text-align:center;">
+                ИИ ищет только среди товаров каталога
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const messagesEl = document.getElementById('chat-messages');
+    const inputEl    = document.getElementById('chat-input');
+    const typingEl   = document.getElementById('chat-typing');
+
+    function setHint(btn) {
+        inputEl.value = btn.textContent;
+        inputEl.focus();
+    }
+
+    function handleKey(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function addMessage(text, isBot) {
+        const msg = document.createElement('div');
+        msg.className = `chat-msg ${isBot ? 'chat-msg-bot' : 'chat-msg-user'}`;
+        msg.innerHTML = isBot
+            ? `<div class="chat-msg-avatar">ИИ</div>
+               <div class="chat-msg-bubble">${text}</div>`
+            : `<div class="chat-msg-bubble">${text}</div>`;
+        messagesEl.appendChild(msg);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const text = inputEl.value.trim();
+        if (!text) return;
+
+        // Показываем сообщение пользователя
+        addMessage(text, false);
+        inputEl.value = '';
+
+        // Показываем индикатор загрузки
+        typingEl.style.display = 'flex';
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+
+            const data = await response.json();
+            typingEl.style.display = 'none';
+            addMessage(data.answer, true);
+
+        } catch {
+            typingEl.style.display = 'none';
+            addMessage('Не удалось получить ответ. Попробуйте ещё раз.', true);
+        }
+    }
+</script>

@@ -2,6 +2,7 @@
 @model shop.wb.Pages.Producs.CreateModel
 @{
     ViewData["Title"] = "Добавить изделие";
+    Layout = "_Layout";
 }
 
 <div class="container">
@@ -38,7 +39,7 @@
                     <div class="form-group">
                         <label asp-for="Product.Name">Название</label>
                         <input asp-for="Product.Name"
-                               placeholder="Например: Вязаная шапка из мериноса, серая" />
+                               placeholder="Например: Мини фигурка по вселенной Warhammer" />
                         <span asp-validation-for="Product.Name" class="form-error"></span>
                     </div>
 
