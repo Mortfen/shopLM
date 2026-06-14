@@ -67,6 +67,7 @@ public class Program
 
                   };
               });
+        builder.Services.AddIdentity<User, IdentityRole<Guid>>().AddEntityFrameworkStores<DB>().AddDefaultTokenProviders();
         builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
         builder.Services.AddEndpointsApiExplorer();

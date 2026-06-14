@@ -32,15 +32,43 @@ namespace shop.wb.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; } = new();
 
+        [TempData]
+        public string? ErrorMessage { get; set; }
+
         public void OnGet() { }
-        public IActionResult OnPost()
+
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
-                return StatusCode(401);
+            { return Page(); }    
+                
 
+            var client = this.httpFactory.CreateClient("API");
 
-            return Page();
-            // логика логина
+            var response = await client.PostAsJsonAsync("api/auth/login", new
+            {
+                Email = Input.Email,
+                Password = Input.Password
+            });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ErrorMessage = "Неверный email или пароль";
+                return Page();
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
+
+            // Сохраняем токен в сессии
+            HttpContext.Session.SetString("jwt", result!.Token);
+
+            return RedirectToPage("/Index");
         }
     }
+
+    public class TokenResponse
+    {
+        public string Token { get; set; } = "";
+    }
 }
+
