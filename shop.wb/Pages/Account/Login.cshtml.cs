@@ -1,12 +1,16 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace shop.wb.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly IHttpClientFactory? httpFactory;
+        private readonly IHttpClientFactory httpFactory;
         public LoginModel(IHttpClientFactory httpFactory)
         { this.httpFactory = httpFactory;  }
         public class InputModel
@@ -23,7 +27,7 @@ namespace shop.wb.Pages.Account
             [MinLength(8, ErrorMessage = "Минимум 8 символов")]
             [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[!;$#*&@.]).+$",
                 ErrorMessage = "Пароль должен содержать заглавную букву, цифру и спецсимвол")]
-            public string Password { get; set; }
+            public string Password { get; set; } = "";
 
 
             public bool RememberMe { get; set; }
@@ -59,8 +63,28 @@ namespace shop.wb.Pages.Account
 
             var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
-            // Сохраняем токен в сессии
+            //Сохраняем токен в сессии
             HttpContext.Session.SetString("jwt", result!.Token);
+            //создание cooke
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(result.Token);
+
+            var claims = jwtToken.Claims.ToList();
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal,
+                new AuthenticationProperties
+                {
+                    ExpiresUtc = jwtToken.ValidTo, // синхронизируем срок с JWT
+                    // IsPersistent = Input.RememberMe save cooke
+                    IsPersistent = false
+                });
+
+
 
             return RedirectToPage("/Index");
         }

@@ -18,7 +18,7 @@ namespace shop.api.Data.Controllers
         {
             this.userManager = userManager;
             this.privateKey = RSA.Create();
-            this.privateKey.ImportFromPem(System.IO.File.ReadAllText("Keys/key.pem")); //=>>FILE error compilator
+            this.privateKey.ImportFromPem(System.IO.File.ReadAllText("key!/key.pem")); //=>>FILE error compilator
                                                                                        // _privateKey.ImportFromEncryptedPem if pass on pem
         }
         // POST api/auth/register
@@ -72,7 +72,7 @@ namespace shop.api.Data.Controllers
             var token = new JwtSecurityToken
                 (
                     issuer:"HobbyShop.api",
-                    audience:"HobbyShop.web",
+                    audience:"HobbyShop.Web",
                     claims: claims,
                     expires:DateTime.UtcNow.AddHours(2),
                     signingCredentials: credentialis

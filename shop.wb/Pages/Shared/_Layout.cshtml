@@ -17,8 +17,8 @@
 
         <nav class="nav-links">
             <a asp-page="/Index">Каталог</a>
-            <a asp-page="/Products/Create">Продать</a>
-            <a asp-page="/Chat/Index">Поиск ИИ</a>
+            <a asp-page="/Producs/Create">Продать</a>
+            <a asp-page="/Chat">Поиск ИИ</a>
         </nav>
 
         <div class="header-actions">
@@ -29,6 +29,9 @@
                         <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
                     </svg>
                 </a>
+                    <a asp-page="/Account/Logout" class="btn-outline" style="color:var(--c-danger); border-color:var(--c-danger);">
+                        Выйти
+                    </a>
             }
             else
             {
@@ -45,7 +48,14 @@
 <footer class="site-footer">
     <div class="container">
             <span class="logo">YDIT</span>
-        <p>Реализуй себя сам!</p>
+            <p>Authenticated: @User.Identity?.IsAuthenticated</p>
+            <p>Name: @User.Identity?.Name</p>
+
+            @foreach (var claim in User.Claims)
+            {
+                <p>@claim.Type = @claim.Value</p>
+            }
+        <p>........Реализуй себя сам!</p>
     </div>
 </footer>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,4 +1,8 @@
-﻿using System.Net.Http.Headers;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net;
+using System.Net.Http.Headers;
+using static System.Net.WebRequestMethods;
 
 namespace shop.wb.Services
 {
@@ -22,7 +26,15 @@ namespace shop.wb.Services
         public async Task<HttpResponseMessage> PostAsync<T>(string url, T data)
         {
             AddAuthHeader();
-            return await this.http.PostAsJsonAsync(url, data);
+            var response = await this.http.PostAsJsonAsync(url, data);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await this.context.HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                this.context.HttpContext!.Session.Clear();
+            }
+
+            return response;
         }
 
 
@@ -31,9 +43,12 @@ namespace shop.wb.Services
             var token = this.context.HttpContext?.Session.GetString("jwt");//заголовк jwt
             if (!string.IsNullOrEmpty(token))
             {
+                this.http.DefaultRequestHeaders.Authorization = null;
                 this.http.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
             }
         }
+        /////доделай log out  и истичние cookee
+        //// User.Identity?.IsAuthenticated == true warn!!!
     }
 }

@@ -56,6 +56,9 @@ namespace shop.wb.Pages.Account
 
             if (!response.IsSuccessStatusCode)
             {
+                var errorBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("ОШИБКА РЕГИСТРАЦИИ: " + errorBody);
+
                 ErrorMessage = "Не удалось зарегистрироваться. Возможно email уже используется.";
                 return Page();
             }

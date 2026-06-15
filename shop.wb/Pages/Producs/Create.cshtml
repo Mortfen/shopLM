@@ -37,15 +37,15 @@
                 <div class="gap-stack">
 
                     <div class="form-group">
-                        <label asp-for="Product.Name">Название</label>
-                        <input asp-for="Product.Name"
+                        <label asp-for="ProductINFO.Name">Название</label>
+                        <input asp-for="ProductINFO.Name"
                                placeholder="Например: Мини фигурка по вселенной Warhammer" />
-                        <span asp-validation-for="Product.Name" class="form-error"></span>
+                        <span asp-validation-for="ProductINFO.Name" class="form-error"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Product.Category">Категория</label>
-                        <select asp-for="Product.Category">
+                        <label asp-for="ProductINFO.Category">Категория</label>
+                        <select asp-for="ProductINFO.Category">
                             <option value="">Выберите категорию</option>
                             <option>Вязание</option>
                             <option>Керамика</option>
@@ -55,12 +55,12 @@
                             <option>Дерево</option>
                             <option>Другое</option>
                         </select>
-                        <span asp-validation-for="Product.Category" class="form-error"></span>
+                        <span asp-validation-for="ProductINFO.Category" class="form-error"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Product.Description">Описание</label>
-                        <textarea asp-for="Product.Description"
+                        <label asp-for="ProductINFO.Description">Описание</label>
+                        <textarea asp-for="ProductINFO.Description"
                                   rows="5"
                                   placeholder="Материалы, размеры, особенности изготовления, история изделия..."></textarea>
                         <span class="form-hint">Чем подробнее — тем лучше работает ИИ-поиск</span>
@@ -76,23 +76,23 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label asp-for="Product.Color">Цвет</label>
-                            <input asp-for="Product.Color" placeholder="Например: тёмно-синий" />
+                            <label asp-for="ProductINFO.Color">Цвет</label>
+                            <input asp-for="ProductINFO.Color" placeholder="Например: тёмно-синий" />
                         </div>
                         <div class="form-group">
-                            <label asp-for="Product.Material">Материал</label>
-                            <input asp-for="Product.Material" placeholder="Например: шерсть, хлопок" />
+                            <label asp-for="ProductINFO.Material">Материал</label>
+                            <input asp-for="ProductINFO.Material" placeholder="Например: шерсть, хлопок" />
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label asp-for="Product.Width">Ширина (см)</label>
-                            <input asp-for="Product.Width" type="number" placeholder="0" />
+                            <label asp-for="ProductINFO.Width">Ширина (см)</label>
+                            <input asp-for="ProductINFO.Width" type="number" placeholder="0" />
                         </div>
                         <div class="form-group">
-                            <label asp-for="Product.Height">Высота (см)</label>
-                            <input asp-for="Product.Height" type="number" placeholder="0" />
+                            <label asp-for="ProductINFO.Height">Высота (см)</label>
+                            <input asp-for="ProductINFO.Height" type="number" placeholder="0" />
                         </div>
                     </div>
 
@@ -106,17 +106,17 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label asp-for="Product.Price">Цена</label>
+                            <label asp-for="ProductINFO.Price">Цена</label>
                             <div class="price-input-wrap">
                                 <span class="currency">₽</span>
-                                <input asp-for="Product.Price"
+                                <input asp-for="ProductINFO.Price"
                                        type="number" min="0" placeholder="0" />
                             </div>
-                            <span asp-validation-for="Product.Price" class="form-error"></span>
+                            <span asp-validation-for="ProductINFO.Price" class="form-error"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Product.Quantity">Количество</label>
-                            <input asp-for="Product.Quantity"
+                            <label asp-for="ProductINFO.Quantity">Количество</label>
+                            <input asp-for="ProductINFO.Quantity"
                                    type="number" min="1" value="1" />
                         </div>
                     </div>
