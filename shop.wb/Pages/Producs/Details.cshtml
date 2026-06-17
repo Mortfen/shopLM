@@ -1,0 +1,96 @@
+﻿@page "/Producs/Details/{id:guid}"
+@model shop.wb.Pages.Producs.DetailsModel
+@{
+	ViewData["Title"] = "Информация";
+	Layout = "_Layout";
+}
+
+<div class="container" style="padding: 40px 20px; max-width: 900px;">
+
+    @if (Model.Product == null)
+    {
+        <p class="text-muted">Товар не найден.</p>
+        return;
+    }
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px;">
+
+        <!-- Фото -->
+        <div>
+            @if (Model.Product.Images.Any())
+            {
+                <img src="@(Model.ApiBase + Model.Product.Images.First())"
+                     alt="@Model.Product.Title"
+                     style="width:100%; border-radius:12px; object-fit:cover;" />
+            }
+            else
+            {
+                <img src="https://placehold.co/500x500/1A2E22/4E9A6A?text=Фото"
+                     style="width:100%; border-radius:12px;" />
+            }
+        </div>
+
+        <!-- Инфо -->
+        <div style="display:flex; flex-direction:column; gap:16px;">
+
+            <h1 style="font-family:'DM Serif Display',serif; font-weight:400; font-size:28px;">
+                @Model.Product.Title
+            </h1>
+
+            <div style="font-size:26px; color:var(--c-accent);">
+                @Model.Product.Price ₽
+            </div>
+
+            <div class="text-muted text-sm">Продавец: @Model.Product.SellerName</div>
+
+            @if (Model.Product.Info?.Category != null)
+            {
+                <span class="tag">@Model.Product.Info.Category</span>
+            }
+
+            <!-- Характеристики -->
+            @if (Model.Product.Info != null)
+            {
+                <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                    @if (!string.IsNullOrEmpty(Model.Product.Info.Material))
+                    {
+                        <div class="flex-between">
+                            <span class="text-muted">Материал</span>
+                            <span>@Model.Product.Info.Material</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Product.Info.Color))
+                    {
+                        <div class="flex-between">
+                            <span class="text-muted">Цвет</span>
+                            <span>@Model.Product.Info.Color</span>
+                        </div>
+                    }
+                    @if (Model.Product.Info.Width > 0 || Model.Product.Info.Height > 0)
+                    {
+                        <div class="flex-between">
+                            <span class="text-muted">Размер</span>
+                            <span>@Model.Product.Info.Width × @Model.Product.Info.Height см</span>
+                        </div>
+                    }
+                    <div class="flex-between">
+                        <span class="text-muted">В наличии</span>
+                        <span>@Model.Product.Quantity шт.</span>
+                    </div>
+                </div>
+            }
+
+            <!-- Описание -->
+            @if (!string.IsNullOrEmpty(Model.Product.Info?.FullDescription))
+            {
+                <p style="margin-top:12px; line-height:1.6; color:var(--c-text);">
+                    @Model.Product.Info.FullDescription
+                </p>
+            }
+
+            <a asp-page="/Index" class="text-muted text-sm" style="margin-top:auto;">
+                ← Назад в каталог
+            </a>
+        </div>
+    </div>
+</div>

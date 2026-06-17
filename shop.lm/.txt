@@ -1,0 +1,68 @@
+docker compose up -d
+docker exec -it ollama_local ollama pull gemma3:4b
+docker exec -it ollama_local ollama run gemma3:4b "привет, кто ты?"
+
+docker exec -it ollama_local ollama list
+http://localhost:11434/
+
+.......
+    private readonly API api;
+public List<CartItem> Items { get; set; } = new();
+    public decimal Total => Items.Sum(x => x.Price * x.Quantity);
+
+    public OrdersModel(API api) { this.api = api; }
+
+    public void OnGet()
+    {
+        var json = HttpContext.Session.GetString("cart");
+        if (json != null)
+            Items = JsonSerializer.Deserialize<List<CartItem>>(json) ?? new();
+    }
+
+    public IActionResult OnPostRemove(Guid productId)
+    {
+        var json = HttpContext.Session.GetString("cart");
+        var cart = json != null ? JsonSerializer.Deserialize<List<CartItem>>(json)! : new();
+        cart.RemoveAll(x => x.ProductId == productId);
+        HttpContext.Session.SetString("cart", JsonSerializer.Serialize(cart));
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostCheckout()
+    {
+        var json = HttpContext.Session.GetString("cart");
+        if (json == null) return RedirectToPage();
+
+        var cart = JsonSerializer.Deserialize<List<CartItem>>(json)!;
+        if (!cart.Any()) return RedirectToPage();
+
+        var dto = new
+        {
+            Items = cart.Select(x => new
+            {
+                x.ProductId,
+                x.Quantity,
+                UnitPrice = x.Price
+            })
+        };
+
+        var response = await this.api.PostAsync("api/orders", dto);
+        if (response.IsSuccessStatusCode)
+        {
+            HttpContext.Session.Remove("cart");
+            return RedirectToPage("/Orders/Index");
+        }
+
+        Items = cart;
+        ModelState.AddModelError("", "Ошибка при оформлении");
+        return Page();
+    }
+
+    public class CartItem
+    {
+        public Guid ProductId { get; set; }
+        public string Title { get; set; } = "";
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public string? ImageUrl { get; set; }
+    }

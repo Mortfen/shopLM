@@ -19,7 +19,16 @@ namespace shop.wb.Services
 
         public async Task<T?> GetAsync<T>(string url)
         {
+            await this.context.HttpContext!.Session.LoadAsync();
+            //var token = this.context.HttpContext.Session.GetString("jwt");
+
+            //Console.WriteLine($"=== GetAsync: token is {(token == null ? "NULL" : "present, length=" + token.Length)}");
+            //Console.WriteLine($"=== Auth header: {this.http.DefaultRequestHeaders.Authorization?.ToString() ?? "NOT SET"}");
+
             AddAuthHeader();
+
+           // Console.WriteLine($"=== Auth header AFTER: {this.http.DefaultRequestHeaders.Authorization?.ToString() ?? "NOT SET"}");
+
             return await this.http.GetFromJsonAsync<T>(url);
         }
 
@@ -37,18 +46,31 @@ namespace shop.wb.Services
             return response;
         }
 
-
+        public async Task<HttpResponseMessage> DeleteAsync(string url)
+        {
+            AddAuthHeader();
+            return await this.http.DeleteAsync(url);
+        }
         private void AddAuthHeader()
         {
             var token = this.context.HttpContext?.Session.GetString("jwt");//заголовк jwt
+
             if (!string.IsNullOrEmpty(token))
+
             {
+
                 this.http.DefaultRequestHeaders.Authorization = null;
+
                 this.http.DefaultRequestHeaders.Authorization =
+
                     new AuthenticationHeaderValue("Bearer", token);
+
             }
+
         }
         /////доделай log out  и истичние cookee
         //// User.Identity?.IsAuthenticated == true warn!!!
     }
 }
+
+

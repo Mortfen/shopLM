@@ -20,37 +20,44 @@
             <!-- Список товаров -->
             <div class="cart-items">
 
-                @* В реальном коде foreach по Model.Items *@
-                @for (int i = 0; i < 3; i++)
+                @foreach (var order in Model.Orders)
                 {
-                    <div class="cart-item">
-                        <div class="cart-item-img">
-                            <img src="https://placehold.co/120x120/1A2E22/4E9A6A?text=Фото" alt="Товар" />
-                        </div>
-                        <div class="cart-item-info">
-                            <div class="cart-item-name">Вязаный свитер ручной работы</div>
-                            <div class="cart-item-seller text-muted text-sm">Анна М.</div>
-                            <div class="cart-item-meta">
-                                <span class="tag-gray tag">Шерсть · Синий</span>
-                            </div>
-                        </div>
-                        <div class="cart-item-actions">
-                            <div class="qty-control">
-                                <button class="qty-btn">−</button>
-                                <span class="qty-val">1</span>
-                                <button class="qty-btn">+</button>
-                            </div>
-                            <div class="cart-item-price">2 400 <span class="text-muted" style="font-size:13px;">₽</span></div>
-                            <button class="cart-remove" title="Удалить">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                     stroke="currentColor" stroke-width="1.5">
-                                    <path d="M18 6L6 18M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
+                    @foreach (var item in order.Items)
+                    {
+                        <div class="cart-item">
+                            <div class="product-img">
+                                <img src="@(item.ImageUrl != null
+                                            ? Model.ApiBase + item.ImageUrl
+                                             : "https://placehold.co/400x400/1A2E22/4E9A6A?text=Фото")"
+                             alt="@item.Title" />
                     </div>
-                }
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">
+                                    @item.Title
+                                </div>
+                            </div>
 
+                            <div class="cart-item-actions">
+                                <span>@item.Quantity шт.</span>
+
+                                <div class="cart-item-price">
+                                    @item.UnitPrice ₽
+                                </div>
+                            </div>
+                            <form method="post" asp-page-handler="Delete">
+                                <input type="hidden" name="id" value="@order.Id" />
+                                <button type="submit" class="cart-remove" title="Удалить">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor" stroke-width="1.5">
+                                        <path d="M18 6L6 18M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                                }
+                }
+               
+ 
                 <!-- Пустая корзина (скрыта пока есть товары) -->
                 <div class="cart-empty" style="display:none;">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
@@ -73,8 +80,7 @@
 
                 <div class="cart-summary-rows">
                     <div class="cart-summary-row">
-                        <span class="text-muted">Товары (3)</span>
-                        <span>7 200 ₽</span>
+                        <span class="text-muted">Товаров: @Model.TotalCount </span>
                     </div>
                     <div class="cart-summary-row">
                         <span class="text-muted">Доставка</span>
@@ -84,7 +90,7 @@
 
                 <div class="cart-summary-total">
                     <span>Итого</span>
-                    <span>7 200 ₽</span>
+                    <span>@Model.TotalPrice ₽</span>
                 </div>
 
                 <button class="btn btn-primary" style="width:100%; padding:13px; margin-top:20px;">

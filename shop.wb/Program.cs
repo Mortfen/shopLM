@@ -19,17 +19,25 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login";
         options.ExpireTimeSpan = TimeSpan.FromHours(2); // как JWT
     });
-
+builder.Services.AddControllers();
 
 
 var app = builder.Build();
-
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRouting();
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSession();
-app.UseRouting();
-app.MapRazorPages();
-app.UseHttpsRedirection();
-app.Run();
 
+
+app.MapRazorPages();
+app.MapControllers();
+app.Run();
+//test
+//maria.kuznetsova@test.com
+//Пароль: Maria2024!
+//2134@gmail.com
+//Mortgfe2026!
+// 21334@gmail.com
+//Mortgfe2023!

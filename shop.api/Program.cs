@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI;
@@ -41,6 +42,8 @@ public class Program
         builder.Services.AddDbContext<DB>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
+        builder.Services.AddIdentity<User, IdentityRole<Guid>>().AddEntityFrameworkStores<DB>().AddDefaultTokenProviders();
+
         builder.Services.AddAuthentication(options =>
         {
             //def jwt
@@ -58,16 +61,45 @@ public class Program
                       ValidateAudience = true,
                       ValidateIssuerSigningKey = true,
                       ValidIssuer = "HobbyShop.api",
-                      ValidAudience = "HobbyShow.Web",
+                      ValidAudience = "HobbyShop.Web",
                       IssuerSigningKey = new RsaSecurityKey(pub_key),
                       CryptoProviderFactory = new CryptoProviderFactory() { CacheSignatureProviders = false }//ошибка handles, если нет отключить
 
 
 
 
-                  };
+                  }; //логи jwt
+                 
               });
-        builder.Services.AddIdentity<User, IdentityRole<Guid>>().AddEntityFrameworkStores<DB>().AddDefaultTokenProviders();
+
+        builder.Services.AddHttpClient("ollama", client =>
+        {
+            client.Timeout = TimeSpan.FromMinutes(3);
+        });
+
+
+
+
+        builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // игнор зацикла
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
+
+
+        builder.Services.Configure<FormOptions>(options =>
+        {
+            options.MultipartBodyLengthLimit = 10 * 1024 * 1024; // 10 МБ
+        });
+
+        builder.Services.AddControllers()
+    .AddJsonOptions(o =>
+    {
+        o.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
+
         builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
         builder.Services.AddEndpointsApiExplorer();
@@ -77,6 +109,7 @@ public class Program
         builder.Logging.AddConsole();
         builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
         builder.Services.AddControllers();
+        builder.Services.AddHttpClient();
         /////////////////////////////////
         var app = builder.Build();
         //////////////////////////////////
@@ -111,12 +144,11 @@ public class Program
 
         if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
         app.UseHttpsRedirection();
-        app.UseAuthentication();
-        app.UseAuthorization();
-        app.UseStaticFiles();
-        app.MapControllers();
         app.UseStaticFiles();
         app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapControllers();
         app.Run();
     }
 }

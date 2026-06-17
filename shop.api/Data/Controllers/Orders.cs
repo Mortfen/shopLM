@@ -1,37 +1,93 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using shop.api.Data.Models;
+using System.Security.Claims;
 
 namespace shop.api.Data.Controllers
 {
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        // GET api/orders — мои заказы (Buyer)
-        [HttpGet("api/orders")]
-        public IActionResult GetMyOrders()
-        {
-            throw new NotImplementedException();
-        }
+        private readonly DB db;
+    public OrdersController(DB db) { this.db = db; }
 
-        // GET api/orders/{id} — детали заказа
-        [HttpGet("api/orders/{id}")]
-        public IActionResult GetById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        // POST api/orders — создать заказ (Buyer)
+        [Authorize(Roles = "Buyer")]
         [HttpPost("api/orders")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create([FromBody] CreateOrderDto dto)
         {
-            throw new NotImplementedException();
+            var buyerId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var order = new Order
+            {
+                Id = Guid.NewGuid(),
+                BuyerId = buyerId,
+                Status = OrderStatus.Pending,
+                CreatedAt = DateTime.UtcNow,
+                TotalPrice = dto.Items.Sum(x => x.UnitPrice * x.Quantity),
+                Items = dto.Items.Select(x => new OrderItems
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = x.ProductId,
+                    Quantity = x.Quantity,
+                    UnitPrice = x.UnitPrice
+                }).ToList()
+            };
+
+            this.db.Orders.Add(order);
+            await this.db.SaveChangesAsync();
+            return Ok(new { order.Id });
         }
 
-        // PUT api/orders/{id}/status — обновить статус (Seller/Admin)
-        [HttpPut("api/orders/{id}/status")]
-        public IActionResult UpdateStatus(Guid id)
+        [Authorize]
+        [HttpDelete("api/orders/{id}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var order = await this.db.Orders
+                .FirstOrDefaultAsync(o => o.Id == id && o.BuyerId == userId);
+            if (order == null) return NotFound();
+            this.db.Orders.Remove(order);
+            await this.db.SaveChangesAsync();
+            return Ok();
         }
+
+
+
+
+
+
+        [Authorize]
+        [HttpGet("api/orders/my")]
+        public async Task<IActionResult> MyOrders()
+        {
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var orders = await this.db.Orders
+                .Include(o => o.Items).ThenInclude(i => i.Product).ThenInclude(p => p.Images)
+                .Where(o => o.BuyerId == userId)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+
+            return Ok(orders.Select(o => new
+            {
+                o.Id,
+                o.Status,
+                o.TotalPrice,
+                o.CreatedAt,
+                Items = o.Items.Select(i => new
+                {
+                    Title = i.Product.Title,
+                    i.Quantity,
+                    i.UnitPrice,
+                   ImageUrl = i.Product.Images.FirstOrDefault()?.ImageUrl
+                }).ToList()
+            }));
+        }
+
+        public record CreateOrderDto(List<OrderItemDto> Items);
+        public record OrderItemDto(Guid ProductId, int Quantity, decimal UnitPrice);
+   
     }
 }
