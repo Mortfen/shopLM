@@ -140,7 +140,16 @@ public class Program
                 return "Stable API";
             });
 
-
+        var inDocker = builder.Configuration.GetValue<bool>("IN_DOCKER");
+        if (inDocker == true)
+        {
+            using (var ss = app.Services.CreateScope())
+            {
+                var db = ss.ServiceProvider.GetRequiredService<DB>();
+                await Task.Delay(5000);
+                await db.Database.MigrateAsync();
+            }
+        }
 
         if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
         app.UseHttpsRedirection();
