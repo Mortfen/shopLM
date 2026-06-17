@@ -81,7 +81,7 @@ namespace shop.wb.Pages.Account
                 {
                     ExpiresUtc = jwtToken.ValidTo, // синхронизируем срок с JWT
                     // IsPersistent = Input.RememberMe save cooke
-                    IsPersistent = false
+                    IsPersistent = true
                 });
 
 

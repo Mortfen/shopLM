@@ -1,0 +1,63 @@
+﻿@page "/Producs/Edit/{id:guid}"
+@model shop.wb.Pages.Producs.EditModel
+@{
+	ViewData["Title"] = "Изменения";
+	Layout = "_Layout";
+}
+<div class="container" style="max-width:600px; padding:40px 20px;">
+    <h1 style="font-family:'DM Serif Display',serif; font-weight:400; margin-bottom:32px;">
+        Редактировать товар
+    </h1>
+
+    <form method="post">
+        <div class="gap-stack">
+            <div class="form-group">
+                <label>Название</label>
+                <input type="text" name="Name" value="@Model.Name" />
+            </div>
+            <div class="form-group">
+                <label>Цена</label>
+                <input type="number" name="Price" value="@Model.Price" />
+            </div>
+            <div class="form-group">
+                <label>Количество</label>
+                <input type="number" name="Quantity" value="@Model.Quantity" />
+            </div>
+            <div class="form-group">
+                <label>Категория</label>
+                <input type="text" name="Category" value="@Model.Category" />
+            </div>
+            <div class="form-group">
+                <label>Описание</label>
+                <textarea name="Description" rows="4">@Model.Description</textarea>
+            </div>
+            <div class="form-group">
+                <label>Материал</label>
+                <input type="text" name="Material" value="@Model.Material" />
+            </div>
+            <div class="form-group">
+                <label>Цвет</label>
+                <input type="text" name="Color" value="@Model.Color" />
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group">
+                    <label>Ширина (см)</label>
+                    <input type="number" name="Width" value="@Model.Width" />
+                </div>
+                <div class="form-group">
+                    <label>Высота (см)</label>
+                    <input type="number" name="Height" value="@Model.Height" />
+                </div>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:24px;">
+            <button type="submit" class="btn btn-primary" style="padding:11px 28px;">
+                Сохранить
+            </button>
+            <a asp-page="/Account/Profile" class="btn" style="padding:11px 28px;">
+                Отмена
+            </a>
+        </div>
+    </form>
+</div>

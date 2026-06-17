@@ -18,13 +18,18 @@ namespace shop.wb.Pages.Producs
         public string Description { get; set; } = "";
         [Required(ErrorMessage = "÷вет, или это хамельон?")]
         public string Color { get; set; } = "";
+        [Required(ErrorMessage = "”кажите материал")]
         public string Material { get; set; } = "";
+        [Required(ErrorMessage = "”кажите ширину")]
         [Range(1, double.MaxValue, ErrorMessage = "Ўирина не омжет быть меньше нул€, ты не атом")]
         public int Width { get; set; }
+        [Required(ErrorMessage = "”кажите длину")]
         [Range(1, double.MaxValue, ErrorMessage = "¬ведите корректную длину, хватит прикалыватьс€")]
         public int Height { get; set; }
+        [Required(ErrorMessage = "”кажите цену")]
         [Range(1,double.MaxValue,ErrorMessage = "÷ена должна быть больше 0, это не благотворительность")]
         public decimal Price { get; set; }
+        [Required(ErrorMessage = "”кажите количесвто")]
         [Range(1, int.MaxValue, ErrorMessage = " оличество должно быть больше 0, воздух не продаЄм")]
         public int Quantity { get; set; } = 1;
     }

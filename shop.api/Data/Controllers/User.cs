@@ -7,6 +7,7 @@ using shop.api.Data.Models;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using static shop.api.Data.Controllers.ProductsController;
 
 namespace shop.api.Data.Controllers
 {
@@ -66,7 +67,23 @@ namespace shop.api.Data.Controllers
         }
 
 
+        //обнолвние данных
+        [Authorize]
+        [HttpPut("api/users/me/change")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var user = await this.userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound();
 
+            user.FullName = dto.FullName;
+            user.Email = dto.Email;
+            user.UserName = dto.Email;
+            await this.userManager.UpdateAsync(user);
+            return Ok();
+        }
+
+        public record UpdateProfileDto(string FullName,string Email);
 
 
         [Authorize]
@@ -103,5 +120,48 @@ namespace shop.api.Data.Controllers
                 hasToken = !string.IsNullOrEmpty(auth)
             });
         }
+        //delete
+        [Authorize(Roles = "Seller")]
+        [HttpDelete("api/products/{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var sellerId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var product = await this.db.Products
+                .FirstOrDefaultAsync(p => p.Id == id && p.SellerId == sellerId);
+            if (product == null) return NotFound();
+            this.db.Products.Remove(product);
+            await this.db.SaveChangesAsync();
+            return Ok();
+        }
+        //edit
+        [Authorize(Roles = "Seller")]
+        [HttpPut("api/products/{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] CreateProductDto dto)
+        {
+            var sellerId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var product = await this.db.Products
+                .Include(p => p.Info)
+                .FirstOrDefaultAsync(p => p.Id == id && p.SellerId == sellerId);
+            if (product == null) return NotFound();
+
+            product.Title = dto.Name;
+            product.Price = dto.Price;
+            product.Quantity = dto.Quantity;
+
+            if (product.Info != null)
+            {
+                product.Info.FullDescription = dto.Description;
+                product.Info.ShortDescription = dto.Description.Length > 120 ? dto.Description[..120] : dto.Description;
+                product.Info.Category = dto.Category;
+                product.Info.Material = dto.Material;
+                product.Info.Color = dto.Color;
+                product.Info.Width = dto.Width;
+                product.Info.Height = dto.Height;
+            }
+
+            await this.db.SaveChangesAsync();
+            return Ok();
+        }
+
     }
 }

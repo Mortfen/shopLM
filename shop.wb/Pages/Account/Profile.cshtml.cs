@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using shop.wb.Services;
+using System.ComponentModel.DataAnnotations;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace shop.wb.Pages.Account
@@ -33,6 +34,23 @@ namespace shop.wb.Pages.Account
             }
         }
 
+        [BindProperty]
+        [Required(ErrorMessage = "Имя обязательно")]
+        [RegularExpression(@"^[a-zA-Zа-яА-ЯёЁ\s]+$", ErrorMessage = "Имя должно содержать только буквы")]
+        public string FullName { get; set; } = "";
+        [BindProperty]
+        [Required(ErrorMessage = "Email обязателен")]
+        [EmailAddress(ErrorMessage = "Некорректный email")]
+        public string Email { get; set; } = "";
+
+        public async Task<IActionResult> OnPostSaveProfileAsync()
+        {
+            if (!ModelState.IsValid) { return Page(); }
+            await this.api.PutAsync("api/users/me/change", new { FullName,Email });
+            return RedirectToPage();
+        }
+
+
         public async Task<IActionResult> OnPostBecomeSellerAsync()
         {
             var response = await this.api.PostAsync("api/users/me/become-seller", new { });
@@ -46,7 +64,12 @@ namespace shop.wb.Pages.Account
             return RedirectToPage();
         }
 
-
+        //удаление
+        public async Task<IActionResult> OnPostDeleteProductAsync(Guid id)
+        {
+            await this.api.DeleteAsync($"api/products/{id}");
+            return RedirectToPage();
+        }
     }
     public class ProfileDto
     {

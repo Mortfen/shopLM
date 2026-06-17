@@ -45,6 +45,12 @@ namespace shop.wb.Services
 
             return response;
         }
+        public async Task<HttpResponseMessage> PutAsync(string url, object body)
+        {
+            AddAuthHeader();
+            return await this.http.PutAsJsonAsync(url, body);
+        }
+
 
         public async Task<HttpResponseMessage> DeleteAsync(string url)
         {
