@@ -74,8 +74,7 @@ namespace shop.wb.Services
             }
 
         }
-        /////доделай log out  и истичние cookee
-        //// User.Identity?.IsAuthenticated == true warn!!!
+       
     }
 }
 

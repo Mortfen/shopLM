@@ -11,26 +11,38 @@ namespace shop.wb.Pages.Producs
     public class DataProduct
     {
         [Required(ErrorMessage = "Введите название")]
+        [RegularExpression(@"^[a-zA-Z\u0400-\u04FF\s]+$", ErrorMessage = "Only letters allowed")]
         public string Name { get; set; } = "";
+
         [Required(ErrorMessage = "Выберите категорию")]
+        [RegularExpression(@"^[a-zA-Z\u0400-\u04FF\s]+$", ErrorMessage = "Only letters allowed")]
         public string Category { get; set; } = "";
-        [Required(ErrorMessage = "Описание,не доваленно")]
-        public string Description { get; set; } = "";
+
+        [Required(ErrorMessage = "Описание не доваленно")]
+        public string Description { get; set; } = ""; // описание не трогаем - там могут быть цифры и знаки
+
         [Required(ErrorMessage = "Цвет, или это хамельон?")]
+        [RegularExpression(@"^[a-zA-Z\u0400-\u04FF\s]+$", ErrorMessage = "Only letters allowed")]
         public string Color { get; set; } = "";
+
         [Required(ErrorMessage = "Укажите материал")]
+        [RegularExpression(@"^[a-zA-Z\u0400-\u04FF\s]+$", ErrorMessage = "Only letters allowed")]
         public string Material { get; set; } = "";
+
         [Required(ErrorMessage = "Укажите ширину")]
-        [Range(1, double.MaxValue, ErrorMessage = "Ширина не омжет быть меньше нуля, ты не атом")]
+        [Range(1, double.MaxValue, ErrorMessage = "Ширина не может быть меньше нуля")]
         public int Width { get; set; }
+
         [Required(ErrorMessage = "Укажите длину")]
-        [Range(1, double.MaxValue, ErrorMessage = "Введите корректную длину, хватит прикалываться")]
+        [Range(1, double.MaxValue, ErrorMessage = "Введите корректную длину")]
         public int Height { get; set; }
+
         [Required(ErrorMessage = "Укажите цену")]
-        [Range(1,double.MaxValue,ErrorMessage = "Цена должна быть больше 0, это не благотворительность")]
+        [Range(1, double.MaxValue, ErrorMessage = "Цена должна быть больше 0")]
         public decimal Price { get; set; }
-        [Required(ErrorMessage = "Укажите количесвто")]
-        [Range(1, int.MaxValue, ErrorMessage = "Количество должно быть больше 0, воздух не продаём")]
+
+        [Required(ErrorMessage = "Укажите количество")]
+        [Range(1, int.MaxValue, ErrorMessage = "Количество должно быть больше 0")]
         public int Quantity { get; set; } = 1;
     }
 

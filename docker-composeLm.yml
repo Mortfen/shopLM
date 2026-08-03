@@ -1,0 +1,16 @@
+services:
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - hobbyshop-net
+
+volumes:
+  ollama-data:
+
+networks:
+  hobbyshop-net:
+    name: hobbyshop-net

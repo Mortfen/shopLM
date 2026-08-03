@@ -21,7 +21,7 @@ namespace shop.wb.Pages.Account
             this.config = config;
         }
 
-        public string ApiBase => this.config["ApiBaseUrl"] ?? "https://localhost:7168";
+        public string ApiBase => this.config["ApiBaseUrl"] ?? "http://hobbyshop-api:8080";
         public ProfileDto?  Profile { get; set;}
         public List<ProductDto> MyProducts { get; set; } = new();
         public async Task OnGetAsync()
@@ -35,12 +35,12 @@ namespace shop.wb.Pages.Account
         }
 
         [BindProperty]
-        [Required(ErrorMessage = "Имя обязательно")]
-        [RegularExpression(@"^[a-zA-Zа-яА-ЯёЁ\s]+$", ErrorMessage = "Имя должно содержать только буквы")]
+        [Required(ErrorMessage = "Enter name")]
+        [RegularExpression(@"^[a-zA-Z\u0400-\u04FF\s]+$", ErrorMessage = "Error Name")]
         public string FullName { get; set; } = "";
         [BindProperty]
-        [Required(ErrorMessage = "Email обязателен")]
-        [EmailAddress(ErrorMessage = "Некорректный email")]
+        [Required(ErrorMessage = "Enter Email")]
+        [EmailAddress(ErrorMessage = "Email error")]
         public string Email { get; set; } = "";
 
         public async Task<IActionResult> OnPostSaveProfileAsync()

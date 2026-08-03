@@ -18,7 +18,7 @@ namespace shop.api.Data.Controllers
         {
             this.userManager = userManager;
             this.privateKey = RSA.Create();
-            this.privateKey.ImportFromPem(System.IO.File.ReadAllText("key!/key.pem")); //=>>FILE error compilator
+            this.privateKey.ImportFromPem(System.IO.File.ReadAllText("key/key.pem")); //=>>FILE error compilator
                                                                                        // _privateKey.ImportFromEncryptedPem if pass on pem
         }
         // POST api/auth/register
@@ -46,13 +46,6 @@ namespace shop.api.Data.Controllers
             var roles = await this.userManager.GetRolesAsync(user);
             var token = GenerateToken(user, roles);
             return Ok(new { token });
-        }
-
-        // POST api/auth/refresh
-        [HttpPost("api/auth/refresh")]
-        public IActionResult Refresh()
-        {
-            throw new NotImplementedException();
         }
 
         //метод jwt

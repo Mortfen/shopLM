@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using shop.wb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,11 +8,11 @@ builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<API>();
 builder.Services.AddHttpClient("API", user =>
-{ user.BaseAddress = new Uri("https://localhost:7168"); }
+{ user.BaseAddress = new Uri("http://hobbyshop-api:8080"); }
 );
 builder.Services.AddSession(x =>
 { x.IdleTimeout = TimeSpan.FromHours(2);
-    x.Cookie.HttpOnly = true;  }
+    x.Cookie.HttpOnly = false;  }
 );
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -23,7 +24,7 @@ builder.Services.AddControllers();
 
 
 var app = builder.Build();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();

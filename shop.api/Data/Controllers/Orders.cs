@@ -13,7 +13,7 @@ namespace shop.api.Data.Controllers
         private readonly DB db;
     public OrdersController(DB db) { this.db = db; }
 
-        [Authorize(Roles = "Buyer")]
+        [Authorize]
         [HttpPost("api/orders")]
         public async Task<IActionResult> Create([FromBody] CreateOrderDto dto)
         {

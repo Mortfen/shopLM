@@ -12,7 +12,7 @@ namespace shop.wb.Pages.Producs
     public EditModel(API api) { this.api = api; }
 
         [BindProperty]
-        [Required(ErrorMessage = "Название обязательно")]
+        [Required(ErrorMessage = "Name")]
         [StringLength(200, MinimumLength = 2, ErrorMessage = "От 2 до 200 символов")]
         public string Name { get; set; } = "";
 

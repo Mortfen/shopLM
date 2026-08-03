@@ -54,7 +54,7 @@ public class Program
               .AddJwtBearer(options => {
                   //RSA
                   var pub_key = RSA.Create();
-                  pub_key.ImportFromPem(File.ReadAllText("key!/key.pub"));
+                  pub_key.ImportFromPem(File.ReadAllText("key/key.pub"));
                   options.TokenValidationParameters = new TokenValidationParameters
                   {
                       ValidateIssuer = true,
@@ -134,27 +134,26 @@ public class Program
 
             logger.LogInformation("Ответ: {StatusCode}", context.Response.StatusCode);
         });
-        using (var scope = app.Services.CreateScope()) { await DbSeeder.SeedAsync(scope.ServiceProvider); }
-            app.MapGet("/", () =>
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<DB>();
+
+            await db.Database.MigrateAsync(); 
+
+            await DbSeeder.SeedAsync(scope.ServiceProvider); 
+        }
+
+
+        app.MapGet("/", () =>
             {
                 return "Stable API";
             });
 
-        var inDocker = builder.Configuration.GetValue<bool>("IN_DOCKER");
-        if (inDocker == true)
-        {
-            using (var ss = app.Services.CreateScope())
-            {
-                var db = ss.ServiceProvider.GetRequiredService<DB>();
-                await Task.Delay(5000);
-                await db.Database.MigrateAsync();
-            }
-        }
-
         if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
         app.UseHttpsRedirection();
-        app.UseStaticFiles();
         app.UseRouting();
+        app.UseStaticFiles();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

@@ -1,0 +1,25 @@
+docker compose -f docker-composeDB.yml up -d
+docker compose -f docker-composeLm.yml up -d
+docker exec -it ollama ollama pull gemma3:4b
+docker compose -f docker-composeApp.yml up -d
+
+docker compose up -d --build
+
+
+docker exec -it illama_local ollama pull gemma3:4b
+
+
+/// logs
+docker logs testdocker-hobbyshop-api-1
+docker logs testdocker-hobbyshop-web-1
+
+testdocker-ollama-1
+
+
+....
+docker exec -it ollama_local ollama run gemma3:4b "привет"
+
+
+docker exec -it ollama_local ollama pull gemma3:4b
+
+docker compose -f docker-composeApp.yml up --build

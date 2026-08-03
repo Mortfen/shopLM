@@ -361,3 +361,20 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Castome
+shop.api/key/
+
+# Ignore user uploads
+shop.api/wwwroot/uploads/
+shop.wb/wwwroot/uploads/
+
+# Keys
+*.pem
+*.pub
+*.key
+*.pfx
+*.crt
+*.cer
+*.p12
+

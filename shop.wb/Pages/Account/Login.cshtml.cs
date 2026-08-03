@@ -19,8 +19,8 @@ namespace shop.wb.Pages.Account
                 
            
 
-            [Required(ErrorMessage = "Введите email")]
-            [EmailAddress(ErrorMessage = "Некорректный email")]
+            [Required(ErrorMessage = "Send Email")]
+            [EmailAddress(ErrorMessage = "Email error")]
             public string Email { get; set; } = "";
 
             [Required(ErrorMessage = "Введите пароль")]

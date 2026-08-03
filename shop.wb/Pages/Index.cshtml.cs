@@ -20,8 +20,9 @@ namespace shop.wb.Pages
         [BindProperty(SupportsGet = true)]
         public string? Category { get; set; }
         public int SellerCount => Product.Select(p => p.SellerId).Distinct().Count();
-        public string ApiBase => this.config["ApiBaseUrl"] ?? "https://localhost:7168";
-       // public List<OrderDto> Orders { get; set; } = new List<OrderDto>();
+
+        public string ApiBase => this.config["ApiBaseUrl"] ?? "http://hobbyshop-api:8080";
+        // public List<OrderDto> Orders { get; set; } = new List<OrderDto>();
         public List<ProductCardDto> Product { get; set; } = new List<ProductCardDto>();
         public async Task OnGetAsync() 
         {

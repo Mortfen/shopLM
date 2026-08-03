@@ -1,0 +1,37 @@
+services:
+  hobbyshop-api:
+    build:
+      context: .
+      dockerfile: shop.api/Dockerfile
+    ports:
+      - "7168:8080"
+    environment:
+      - IN_DOCKER=true
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__Default=Host=postgres;Port=5432;Database=hobbyshop;Username=postgres;Password=mypassword
+      - Ollama__BaseUrl=http://ollama:11434
+    volumes:
+      - O:/testDocker/shop.api/wwwroot:/app/wwwroot
+    networks:
+      - hobbyshop-net
+
+  hobbyshop-web:
+    build:
+      context: .
+      dockerfile: shop.wb/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ApiBaseUrl=http://localhost:7168
+      - ApiInternalUrl=http://hobbyshop-api:8080
+    networks:
+      - hobbyshop-net
+    depends_on:
+      - hobbyshop-api
+
+networks:
+  hobbyshop-net:
+    name: hobbyshop-net

@@ -10,7 +10,7 @@ namespace shop.wb.Pages.Producs
     private readonly IConfiguration config;
 
     public ProductDto? Product { get; set; }
-        public string ApiBase => this.config["ApiBaseUrl"] ?? "https://localhost:7168";
+        public string ApiBase => this.config["ApiBaseUrl"] ?? "http://hobbyshop-api:8080";
 
         public DetailsModel(API api, IConfiguration config)
         {

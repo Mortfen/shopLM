@@ -29,7 +29,7 @@ namespace shop.wb.Pages.Account
 
 
 
-        public string ApiBase => this.config["ApiBaseUrl"] ?? "https://localhost:7168";
+        public string ApiBase => this.config["ApiBaseUrl"] ?? "http://hobbyshop-api:8080";
         public async Task OnGetAsync()
         {
             Orders = await api.GetAsync<List<OrdersDto>>("api/orders/my")
